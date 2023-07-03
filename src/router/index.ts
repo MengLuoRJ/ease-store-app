@@ -10,6 +10,41 @@ const router = createRouter({
       component: HomeView
     },
     {
+      path: '/login',
+      name: 'login',
+      component: () => import('../views/LoginView.vue')
+    },
+    {
+      path: '/merchandise/entry',
+      name: 'MerchandiseEntry',
+      component: () => import('../views/MerchandiseEntryView.vue')
+    },
+    {
+      path: '/merchandise/update/:id',
+      name: 'MerchandiseUpdate',
+      component: () => import('../views/MerchandiseUpdateView.vue')
+    },
+    {
+      path: '/merchandise/list',
+      name: 'MerchandiseList',
+      component: () => import('../views/MerchandiseListView.vue')
+    },
+    {
+      path: '/order/entry',
+      name: 'OrderEntry',
+      component: () => import('../views/OrderEntryView.vue')
+    },
+    {
+      path: '/order/list',
+      name: 'OrderList',
+      component: () => import('../views/OrderListView.vue')
+    },
+    {
+      path: '/order/detail/:id',
+      name: 'OrderDetail',
+      component: () => import('../views/OrderDetailView.vue')
+    },
+    {
       path: '/about',
       name: 'about',
       // route level code-splitting
