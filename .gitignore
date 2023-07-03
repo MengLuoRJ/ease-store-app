@@ -1,3 +1,9 @@
+# Capacitorjs
+android/*
+/android
+ios/*
+/ios
+
 # Env
 *.env
 .env.*

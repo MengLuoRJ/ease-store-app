@@ -1,25 +1,10 @@
 # ease-store-app
 
-This template should help get you started developing with Vue 3 in Vite.
+EaseStore App is a mobile app for EaseStore, providing merchandise and order management.
 
-## Recommended IDE Setup
+Developed with Vue + Vite + Capacitorjs, and [Vant 4](https://github.com/youzan/vant) + [UnoCSS](https://github.com/unocss/unocss).
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
-
-## Type Support for `.vue` Imports in TS
-
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin) to make the TypeScript language service aware of `.vue` types.
-
-If the standalone TypeScript plugin doesn't feel fast enough to you, Volar has also implemented a [Take Over Mode](https://github.com/johnsoncodehk/volar/discussions/471#discussioncomment-1361669) that is more performant. You can enable it by the following steps:
-
-1. Disable the built-in TypeScript Extension
-    1) Run `Extensions: Show Built-in Extensions` from VSCode's command palette
-    2) Find `TypeScript and JavaScript Language Features`, right click and select `Disable (Workspace)`
-2. Reload the VSCode window by running `Developer: Reload Window` from the command palette.
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vitejs.dev/config/).
+Barcode scanning powered by MLKit with [@capacitor-mlkit](https://github.com/capawesome-team/capacitor-mlkit/)
 
 ## Project Setup
 
@@ -49,4 +34,22 @@ pnpm test:unit
 
 ```sh
 pnpm lint
+```
+
+### Sync Code for Capacitor
+
+```sh
+pnpm sync
+```
+
+### Build and Sync Code for Capacitor
+
+```sh
+pnpm build:sync
+```
+
+### Open Project in Android Studio
+
+```sh
+pnpm open:android
 ```
