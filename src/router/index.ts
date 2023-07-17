@@ -7,7 +7,10 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: HomeView
+      component: HomeView,
+      meta: {
+        keepAlive: true
+      }
     },
     {
       path: '/login',
@@ -27,7 +30,10 @@ const router = createRouter({
     {
       path: '/merchandise/list',
       name: 'MerchandiseList',
-      component: () => import('../views/MerchandiseListView.vue')
+      component: () => import('../views/MerchandiseListView.vue'),
+      meta: {
+        keepAlive: true
+      }
     },
     {
       path: '/order/entry',
@@ -37,7 +43,10 @@ const router = createRouter({
     {
       path: '/order/list',
       name: 'OrderList',
-      component: () => import('../views/OrderListView.vue')
+      component: () => import('../views/OrderListView.vue'),
+      meta: {
+        keepAlive: true
+      }
     },
     {
       path: '/order/detail/:id',
