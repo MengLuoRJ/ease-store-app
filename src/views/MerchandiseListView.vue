@@ -3,14 +3,18 @@ import { getSignedUrl } from '@/composables/useOss'
 import { setAuthorizationHeader, useGet } from '@/composables/useRequest'
 import router from '@/router'
 import type { Merchandise } from '@/types'
+import type { Barcode } from '@capacitor-mlkit/barcode-scanning'
 import { get, set } from '@vueuse/core'
 import { showToast } from 'vant'
 import { reactive, ref } from 'vue'
+import { onBeforeRouteLeave } from 'vue-router'
 
 const merchandiseList = reactive<Merchandise[]>([])
 
-const searchName = ref('')
+const searchLine = ref('')
 const searching = ref(false)
+
+const showCodeScanner = ref(false)
 
 const listLoading = ref(false)
 const listFinished = ref(false)
@@ -21,13 +25,41 @@ const page = reactive({
   take: 10
 })
 
+const onBarcodeScanned = (barcode: Barcode) => {
+  set(searchLine, barcode.displayValue)
+}
+
 async function requestMerchandiseListDataByName() {
   set(searching, true)
   merchandiseList.splice(0, merchandiseList.length)
   const { data, error } = await useGet('/merchandise/name', {
     params: {
-      name: get(searchName)
+      name: get(searchLine)
     },
+    ...setAuthorizationHeader()
+  })
+  if (get(error)) {
+    showToast({
+      message: '查询失败',
+      type: 'fail'
+    })
+    console.log(error)
+  } else if (get(data)) {
+    ;(get(data).data as Merchandise[]).forEach(async (item) => {
+      if (item.picture_url) {
+        const picture_url = await getSignedUrl(item.picture_url)
+        get(merchandiseList).push({ ...get(item), picture_url })
+      } else {
+        get(merchandiseList).push({ ...get(item) })
+      }
+    })
+  }
+}
+
+async function requestMerchandiseListDataByBarcode() {
+  set(searching, true)
+  merchandiseList.splice(0, merchandiseList.length)
+  const { data, error } = await useGet('/merchandise/barcode/' + get(searchLine), {
     ...setAuthorizationHeader()
   })
   if (get(error)) {
@@ -63,7 +95,6 @@ const onListLoad = async () => {
     page.pageCount = result.meta.pageCount
     page.page = result.meta.hasNextPage ? page.page + 1 : page.page
     set(listFinished, !result.meta.hasNextPage)
-
     ;(result.data as Merchandise[]).forEach(async (item: Merchandise) => {
       if (item.picture_url) {
         const picture_url = await getSignedUrl(item.picture_url)
@@ -83,12 +114,28 @@ const onUpdateMerchandise = async (id: number) => {
 
 const onSearchClear = () => {
   console.log('onSearchClear')
-  set(searchName, '')
+  set(searchLine, '')
   set(searching, false)
-  console.log(get(searchName))
+  console.log(get(searchLine))
 }
 
 const onClickLeft = () => history.back()
+
+const changeRouterKeepAlive = (name: string, keepAlive: boolean) => {
+  router.options.routes.map((item: any) => {
+    if (item.name === name) {
+      item.meta.keepAlive = keepAlive
+    }
+  })
+}
+
+onBeforeRouteLeave((to, from) => {
+  if (to.name !== 'MerchandiseUpdate' && to.name !== 'MerchandiseDetail') {
+    changeRouterKeepAlive(from.name as string, false)
+  } else {
+    changeRouterKeepAlive(from.name as string, true)
+  }
+})
 </script>
 
 <template>
@@ -102,14 +149,27 @@ const onClickLeft = () => history.back()
   />
   <div class="merchandise-list mt-2">
     <van-cell-group inset>
-      <van-field v-model="searchName" clearable @clear="onSearchClear">
+      <van-field v-model="searchLine" label="商品名称" clearable @clear="onSearchClear">
         <template #button>
           <van-button size="small" type="primary" @click="requestMerchandiseListDataByName()">
             查询
           </van-button>
         </template>
       </van-field>
+      <van-field v-model="searchLine" label="商品条码" clearable @clear="onSearchClear">
+        <template #button>
+          <div class="flex flex-row gap-1">
+            <van-button size="small" type="default" @click="requestMerchandiseListDataByName()">
+              扫描
+            </van-button>
+            <van-button size="small" type="primary" @click="requestMerchandiseListDataByBarcode()">
+              查询
+            </van-button>
+          </div>
+        </template>
+      </van-field>
     </van-cell-group>
+    <CodeScanner v-model:show="showCodeScanner" @scan="onBarcodeScanned" confirmRequired />
     <div v-if="!searching">
       <van-list
         v-model:loading="listLoading"
