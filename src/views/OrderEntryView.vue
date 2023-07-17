@@ -4,10 +4,11 @@ import { setAuthorizationHeader, useGet, usePost } from '@/composables/useReques
 import type { Merchandise, MerchandiseItem } from '@/types'
 import type { Barcode } from '@capacitor-mlkit/barcode-scanning'
 import { get, set } from '@vueuse/core'
-import { showToast } from 'vant'
+import { showConfirmDialog, showToast } from 'vant'
 import { onMounted, reactive, ref } from 'vue'
 import { useUserStore } from '@/stores/user'
 import { PaymentMethonds } from '@/constants'
+import { setAppBackCallback, setAppBackHistory } from '@/composables/useApp'
 
 const user = useUserStore()
 
@@ -130,10 +131,33 @@ async function submitOrder() {
   }
 }
 
-const onClickLeft = () => history.back()
+function backButtonCheck() {
+  if (merchandiseCart.length > 0) {
+    showConfirmDialog({
+      title: '当前订单尚未提交结算！',
+      message: '是否确认清空订单，返回首页？'
+    })
+      .then(() => {
+        setAppBackHistory()
+        history.back()
+      })
+      .catch(() => {
+        // on cancel
+      })
+  } else {
+    setAppBackHistory()
+    history.back()
+  }
+}
+
+const onClickLeft = () => backButtonCheck()
 
 onMounted(() => {
   order_info.start_at = new Date().toISOString()
+
+  setAppBackCallback(() => {
+    backButtonCheck()
+  })
 })
 </script>
 
@@ -198,7 +222,11 @@ onMounted(() => {
   >
     <van-field v-model="manualEntry" />
   </van-dialog>
-  <van-popup v-model:show="showItemPicker" position="bottom">
+  <van-popup
+    v-model:show="showItemPicker"
+    position="bottom"
+    @closed="merchandiseItems.splice(0, merchandiseItems.length)"
+  >
     <van-empty v-if="!merchandiseItems.length" image="search" description="暂无相关商品" />
     <div v-for="(item, index) in merchandiseItems" :key="index" class="mx-2 my-1">
       <van-card

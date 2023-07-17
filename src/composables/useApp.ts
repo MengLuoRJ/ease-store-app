@@ -23,6 +23,13 @@ export function setAppBackCallbackOnce(callback: () => void, setBackHistory = tr
   })
 }
 
+export function setAppBackCallback(callback: () => void) {
+  removeAppBackLisener()
+  backButtonListener = App.addListener('backButton', () => {
+    callback()
+  })
+}
+
 export function removeAppBackLisener() {
   if (!backButtonListener) return
   backButtonListener.remove()
