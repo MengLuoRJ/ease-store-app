@@ -23,6 +23,14 @@ const onClickLeft = () => history.back()
         <template #title>{{ APPINFO.name }}</template>
         <template #value>{{ 'v' + APPINFO.version }}</template>
       </van-cell>
+      <van-cell
+        title="Github Repository"
+        is-link
+        url="https://github.com/MengLuoRJ/ease-store-app"
+      />
+      <van-cell>
+        <template #title>{{ 'Author: @MengLuoRJ' }}</template>
+      </van-cell>
     </van-cell-group>
     <div class="mx-2">
       <van-collapse v-model="activeCollapse">
