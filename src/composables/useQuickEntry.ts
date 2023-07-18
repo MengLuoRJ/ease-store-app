@@ -4,15 +4,11 @@ export const useQuickEntryShilfLife = (): { text: string; value: number }[] => [
     value: 15
   },
   {
-    text: '30天',
+    text: '1个月（30天）',
     value: 30
   },
   {
-    text: '1个月',
-    value: 30
-  },
-  {
-    text: '2个月',
+    text: '2个月（60天）',
     value: 60
   },
   {
@@ -24,13 +20,37 @@ export const useQuickEntryShilfLife = (): { text: string; value: number }[] => [
     value: 180
   },
   {
+    text: '9个月（270天）',
+    value: 270
+  },
+  {
+    text: '12个月（360天）',
+    value: 360
+  },
+  {
     text: '1年（365天）',
     value: 365
   },
   {
     text: '18个月（540天）',
     value: 540
-  }
+  },
+  {
+    text: '24个月（720天）',
+    value: 720
+  },
+  {
+    text: '2年（730天）',
+    value: 730
+  },
+  {
+    text: '36个月（1080天）',
+    value: 1080
+  },
+  {
+    text: '3年（1095天）',
+    value: 1095
+  },
 ]
 
 export const useQuickEntrySpecs = (): { text: string; value: string }[] => [
