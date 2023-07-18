@@ -8,6 +8,7 @@ import { get, set } from '@vueuse/core'
 import { showToast } from 'vant'
 import { reactive, ref } from 'vue'
 import { onBeforeRouteLeave } from 'vue-router'
+import CodeScanner from '@/components/CodeScanner.vue'
 
 const merchandiseList = reactive<Merchandise[]>([])
 
@@ -159,7 +160,7 @@ onBeforeRouteLeave((to, from) => {
       <van-field v-model="searchLine" label="商品条码" clearable @clear="onSearchClear">
         <template #button>
           <div class="flex flex-row gap-1">
-            <van-button size="small" type="default" @click="requestMerchandiseListDataByName()">
+            <van-button size="small" type="default" @click="showCodeScanner = true">
               扫描
             </van-button>
             <van-button size="small" type="primary" @click="requestMerchandiseListDataByBarcode()">
