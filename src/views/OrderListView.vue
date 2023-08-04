@@ -72,7 +72,7 @@ const onClickLeft = () => history.back()
           </van-tag>
         </template>
         <template #label>
-          <div class="flex flex-col gap-1">
+          <div class="flex flex-col gap-1 text-sm">
             <span>{{ '订单总价：￥' + item.amount + ' 元' }} </span>
             <span v-if="item.status === 'paid'">{{ '支付方式：' + item.payment_method }} </span>
             <span v-if="item.status === 'credit'">{{ '赊账人：' + item.credit_person }} </span>

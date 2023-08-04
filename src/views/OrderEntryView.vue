@@ -176,7 +176,7 @@ onMounted(() => {
   <div v-if="!!merchandiseCart.length" class="merchandise-cart flex flex-col mt-2">
     <van-swipe-cell v-for="(item, index) in merchandiseCart" :key="index">
       <van-card
-        :price="item.price.toPrecision(3)"
+        :price="item.price.toFixed(2)"
         :desc="item.barcode"
         :title="item.name"
         :thumb="item.picture_url"
@@ -230,7 +230,7 @@ onMounted(() => {
     <van-empty v-if="!merchandiseItems.length" image="search" description="暂无相关商品" />
     <div v-for="(item, index) in merchandiseItems" :key="index" class="mx-2 my-1">
       <van-card
-        :price="item.price.toPrecision(3)"
+        :price="item.price.toFixed(2)"
         :desc="item.barcode"
         :title="item.name"
         :thumb="item.picture_url"
@@ -248,7 +248,7 @@ onMounted(() => {
   <van-popup v-model:show="showPaymentPicker" position="bottom" class="h-[50%] overflow-hidden">
     <div class="h-full flex flex-col gap-1 overflow-hidden">
       <div class="mt-2 mx-auto">
-        {{ '价格总计：￥' + total_amount.toPrecision(3) + ' 元' }}
+        {{ '价格总计：￥' + total_amount.toFixed(2) + ' 元' }}
       </div>
       <van-tabs v-model:active="tabActive" class="h-75% overflow-y-overlay">
         <van-tab title="支付" name="paid" class="">
@@ -299,7 +299,7 @@ onMounted(() => {
     </div>
   </van-popup>
   <van-action-bar placeholder>
-    <div class="ml-12 mr-6">{{ '价格总计：￥' + total_amount.toPrecision(3) + ' 元' }}</div>
+    <div class="ml-12 mr-6">{{ '价格总计：￥' + total_amount.toFixed(2) + ' 元' }}</div>
     <van-action-bar-button @click="showManualEntry = true" type="warning" text="商品手录" />
     <van-action-bar-button @click="showCodeScanner = true" type="warning" text="商品扫码" />
     <van-action-bar-button
