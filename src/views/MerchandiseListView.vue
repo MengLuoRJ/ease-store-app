@@ -9,9 +9,11 @@ import { showToast } from 'vant'
 import { reactive, ref } from 'vue'
 import { onBeforeRouteLeave } from 'vue-router'
 import CodeScanner from '@/components/CodeScanner.vue'
+import { onMounted } from 'vue'
 
 const merchandiseList = reactive<Merchandise[]>([])
 
+const activeSearchMethod = ref<'name' | 'barcode' | 'scan'>('name')
 const searchLine = ref('')
 const searching = ref(false)
 
@@ -28,6 +30,7 @@ const page = reactive({
 
 const onBarcodeScanned = (barcode: Barcode) => {
   set(searchLine, barcode.displayValue)
+  requestMerchandiseListDataByBarcode()
 }
 
 async function requestMerchandiseListDataByName() {
@@ -114,10 +117,8 @@ const onUpdateMerchandise = async (id: number) => {
 }
 
 const onSearchClear = () => {
-  console.log('onSearchClear')
   set(searchLine, '')
   set(searching, false)
-  console.log(get(searchLine))
 }
 
 const onClickLeft = () => history.back()
@@ -130,18 +131,20 @@ const changeRouterKeepAlive = (name: string, keepAlive: boolean) => {
   })
 }
 
+onMounted(() => {
+  changeRouterKeepAlive(router.currentRoute.value.name as string, true)
+})
+
 onBeforeRouteLeave((to, from) => {
   if (to.name !== 'MerchandiseUpdate' && to.name !== 'MerchandiseDetail') {
     changeRouterKeepAlive(from.name as string, false)
-  } else {
-    changeRouterKeepAlive(from.name as string, true)
   }
 })
 </script>
 
 <template>
   <van-nav-bar
-    title="订单记录"
+    title="商品记录"
     left-text="返回"
     left-arrow
     @click-left="onClickLeft"
@@ -149,27 +152,41 @@ onBeforeRouteLeave((to, from) => {
     placeholder
   />
   <div class="merchandise-list mt-2">
-    <van-cell-group inset>
-      <van-field v-model="searchLine" label="商品名称" clearable @clear="onSearchClear">
-        <template #button>
-          <van-button size="small" type="primary" @click="requestMerchandiseListDataByName()">
-            查询
-          </van-button>
-        </template>
-      </van-field>
-      <van-field v-model="searchLine" label="商品条码" clearable @clear="onSearchClear">
-        <template #button>
-          <div class="flex flex-row gap-1">
-            <van-button size="small" type="default" @click="showCodeScanner = true">
-              扫描
-            </van-button>
-            <van-button size="small" type="primary" @click="requestMerchandiseListDataByBarcode()">
-              查询
-            </van-button>
-          </div>
-        </template>
-      </van-field>
-    </van-cell-group>
+    <van-tabs v-model:active="activeSearchMethod" type="card">
+      <van-tab name="name" title="品名搜索" class="mt-2">
+        <van-cell-group inset>
+          <van-field v-model="searchLine" label="商品名称" clearable @clear="onSearchClear">
+            <template #button>
+              <van-button size="small" type="primary" @click="requestMerchandiseListDataByName()">
+                查询
+              </van-button>
+            </template>
+          </van-field>
+        </van-cell-group>
+      </van-tab>
+      <van-tab name="barcode" title="条码搜索" class="mt-2">
+        <van-cell-group inset>
+          <van-field v-model="searchLine" label="商品条码" clearable @clear="onSearchClear">
+            <template #button>
+              <div class="flex flex-row gap-1">
+                <van-button size="small" type="default" @click="showCodeScanner = true">
+                  扫描
+                </van-button>
+                <van-button
+                  size="small"
+                  type="primary"
+                  @click="requestMerchandiseListDataByBarcode()"
+                >
+                  查询
+                </van-button>
+              </div>
+            </template>
+          </van-field>
+        </van-cell-group>
+      </van-tab>
+      <!-- <van-tab name="scan" title="扫码搜索" class="mt-2"> </van-tab> -->
+    </van-tabs>
+
     <CodeScanner v-model:show="showCodeScanner" @scan="onBarcodeScanned" confirmRequired />
     <div v-if="!searching">
       <van-list
@@ -181,7 +198,7 @@ onBeforeRouteLeave((to, from) => {
         <van-card
           v-for="(item, index) in merchandiseList"
           :key="index"
-          :price="item.price.toPrecision(3)"
+          :price="item.price.toFixed(2)"
           :desc="item.barcode"
           :title="item.name"
           :thumb="item.picture_url"
@@ -202,7 +219,7 @@ onBeforeRouteLeave((to, from) => {
       <van-card
         v-for="(item, index) in merchandiseList"
         :key="index"
-        :price="item.price.toPrecision(3)"
+        :price="item.price.toFixed(2)"
         :desc="item.barcode"
         :title="item.name"
         :thumb="item.picture_url"
