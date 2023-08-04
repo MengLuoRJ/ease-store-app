@@ -22,7 +22,7 @@ onMounted(async () => {
   <div class="min-h-[100vh] bg-gray-200">
     <van-config-provider :theme-vars="themeVars">
       <router-view v-slot="{ Component }">
-        <keep-alive>
+        <keep-alive :max="3">
           <component :is="Component" v-if="$route.meta.keepAlive" :key="$route.name" />
         </keep-alive>
         <component :is="Component" v-if="!$route.meta.keepAlive" :key="$route.name" />
