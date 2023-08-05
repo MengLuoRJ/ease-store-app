@@ -152,40 +152,42 @@ onBeforeRouteLeave((to, from) => {
     placeholder
   />
   <div class="merchandise-list mt-2">
-    <van-tabs v-model:active="activeSearchMethod" type="card">
-      <van-tab name="name" title="品名搜索" class="mt-2">
-        <van-cell-group inset>
-          <van-field v-model="searchLine" label="商品名称" clearable @clear="onSearchClear">
-            <template #button>
-              <van-button size="small" type="primary" @click="requestMerchandiseListDataByName()">
-                查询
-              </van-button>
-            </template>
-          </van-field>
-        </van-cell-group>
-      </van-tab>
-      <van-tab name="barcode" title="条码搜索" class="mt-2">
-        <van-cell-group inset>
-          <van-field v-model="searchLine" label="商品条码" clearable @clear="onSearchClear">
-            <template #button>
-              <div class="flex flex-row gap-1">
-                <van-button size="small" type="default" @click="showCodeScanner = true">
-                  扫描
-                </van-button>
-                <van-button
-                  size="small"
-                  type="primary"
-                  @click="requestMerchandiseListDataByBarcode()"
-                >
+    <van-sticky :offset-top="46">
+      <van-tabs v-model:active="activeSearchMethod" type="card" class="bg-white pt-2">
+        <van-tab name="name" title="品名搜索" class="mt-2">
+          <van-cell-group inset>
+            <van-field v-model="searchLine" label="商品名称" clearable @clear="onSearchClear">
+              <template #button>
+                <van-button size="small" type="primary" @click="requestMerchandiseListDataByName()">
                   查询
                 </van-button>
-              </div>
-            </template>
-          </van-field>
-        </van-cell-group>
-      </van-tab>
-      <!-- <van-tab name="scan" title="扫码搜索" class="mt-2"> </van-tab> -->
-    </van-tabs>
+              </template>
+            </van-field>
+          </van-cell-group>
+        </van-tab>
+        <van-tab name="barcode" title="条码搜索" class="mt-2">
+          <van-cell-group inset>
+            <van-field v-model="searchLine" label="商品条码" clearable @clear="onSearchClear">
+              <template #button>
+                <div class="flex flex-row gap-1">
+                  <van-button size="small" type="default" @click="showCodeScanner = true">
+                    扫描
+                  </van-button>
+                  <van-button
+                    size="small"
+                    type="primary"
+                    @click="requestMerchandiseListDataByBarcode()"
+                  >
+                    查询
+                  </van-button>
+                </div>
+              </template>
+            </van-field>
+          </van-cell-group>
+        </van-tab>
+        <!-- <van-tab name="scan" title="扫码搜索" class="mt-2"> </van-tab> -->
+      </van-tabs>
+    </van-sticky>
 
     <CodeScanner v-model:show="showCodeScanner" @scan="onBarcodeScanned" confirmRequired />
     <div v-if="!searching">
